@@ -8,7 +8,12 @@ Die fapi schreibt nicht direkt in den Table Storage. Das seres ist ein Proxy fü
 
 ## Unterschiedliche Schemata je Quelle
 
-Daten aus dem RabbitMQ sehen (manchmal) anders aus als Daten die aus dem Table Storage. Das führt zu komischen Seiteneffekten.
+Unterschiedliche Quellen liefern unterschiedliche Schemata. Das führt zu komischen Seiteneffekten.
+Verschiedene problembehaftete Quellen:
+
+- avro-Dateien
+- RabbitMQ
+- Table Storage
 
 ## Großer Zugriff auf die Daten für kleine Anfragen
 

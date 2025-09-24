@@ -24,7 +24,7 @@ Wenn im Altsystem Änderungen an den Daten passieren, werden die Änderungen auf
 
 ### Kontextdiagramm
 
-![fapi-context](/imgs/fapi-context.drawio.svg)
+![fapi-context](/docs/imgs/fapi-context.drawio.svg)
 
 ## Status Quo der fapi
 
@@ -40,4 +40,4 @@ Alle Daten werden dauerhaft im Cache gehalten; das bedeutet, dass beim Start der
 
 Beim Start werden die Avro-Dateien ausgelesen. Lediglich das Delta wird aus dem TableStorage nachgeladen. Das Erreichen des States `READY` dauert in etwas eine Minute, ist aber starkt abhängig von der Datenmenge.
 
-![fapi-init](/imgs/fapi-init.drawio.svg)
+![fapi-init](/docs/imgs/fapi-init.drawio.svg)
