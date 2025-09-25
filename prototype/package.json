@@ -1,0 +1,25 @@
+{
+    "name": "fastify-autoload-app",
+    "version": "1.0.0",
+    "description": "Fastify app with autoload plugin",
+    "main": "dist/app.js",
+    "scripts": {
+        "build": "tsc",
+        "start": "node dist/app.js",
+        "dev": "tsc && bun --watch dist/app.js",
+        "dev:ts": "tsx --watch src/app.ts",
+        "dev:node": "ts-node --watch src/app.ts",
+        "dev:build": "tsc --watch"
+    },
+    "dependencies": {
+        "@fastify/autoload": "^5.8.0",
+        "fastify": "^4.24.3",
+        "zod": "^4.1.11"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "ts-node": "^10.9.0",
+        "tsx": "^4.0.0",
+        "typescript": "^5.0.0"
+    }
+}
