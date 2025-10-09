@@ -1,6 +1,6 @@
 import { BookingHandler } from '@handlers/BookingHandler'
 import { F_RangeSchema, Z_RangeSchema } from '@schemas/range'
-import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify'
+import { FastifyInstance, FastifyPluginOptions, FastifyRequest } from 'fastify'
 
 async function routes(fastify: FastifyInstance, _options: FastifyPluginOptions): Promise<void> {
     fastify.route({

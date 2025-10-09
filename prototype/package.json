@@ -6,7 +6,7 @@
     "scripts": {
         "build": "tsc",
         "start": "node dist/app.js",
-        "dev": "tsc && bun --watch dist/app.js",
+        "dev": "APP=appc sh -c 'tsc && bun --watch dist/app.js'",
         "dev:ts": "tsx --watch src/app.ts",
         "dev:node": "ts-node --watch src/app.ts",
         "dev:build": "tsc --watch"

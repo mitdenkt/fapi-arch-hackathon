@@ -24,3 +24,7 @@ await https://teams.microsoft.com/l/message/19:8b4e7988-dc7d-4f38-b18b-de816e473
 Durch das ständige Caching haben wir monatliche Serverkosten pro Instanz von 1-2 EUR.
 
 await https://teams.microsoft.com/l/message/19:8b4e7988-dc7d-4f38-b18b-de816e47346f_9521efb3-fde7-4e69-866b-52e90648cb02@unq.gbl.spaces/1758726179770?context=%7B%22contextType%22%3A%22chat%22%7D
+
+## Gleichzeitiger API-Zugriff
+
+Es könnte sein, dass sich API-Zugriffe gegenseitig blockieren. Weil die Daten alle in einem Thread gecached sind, werden andere Zugriffe blockiert.

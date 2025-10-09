@@ -1,7 +1,11 @@
+import { CacheHandler } from '@handlers/CacheHandler'
 import fastify from 'fastify'
 import path from 'path'
 
-const server = fastify({ logger: true })
+// caching the data from file system
+CacheHandler.init()
+
+const server = fastify({ logger: false })
 
 // Register the autoload plugin
 server.register(require('@fastify/autoload'), {

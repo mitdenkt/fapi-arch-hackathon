@@ -1,0 +1,19 @@
+{
+    "name": "data-generator",
+    "version": "1.0.0",
+    "description": "Data generation for multi-tenant application",
+    "scripts": {
+        "json": "bun run unified-generator-clean.ts json",
+        "sql": "bun run unified-generator-clean.ts sql",
+        "csv": "bun run unified-generator-clean.ts csv",
+        "all": "bun run unified-generator-clean.ts json && bun run unified-generator-clean.ts sql && bun run unified-generator-clean.ts csv"
+    },
+    "dependencies": {
+        "@faker-js/faker": "^8.4.1"
+    },
+    "devDependencies": {
+        "@types/bun": "^1.2.22",
+        "@types/node": "^20.0.0",
+        "typescript": "^5.0.0"
+    }
+}

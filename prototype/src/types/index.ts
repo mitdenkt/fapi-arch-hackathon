@@ -1,3 +1,5 @@
+import z from "zod"
+
 export interface RouteConfig {
     required: {
         auth: boolean
@@ -17,3 +19,29 @@ export interface CreateUserRequest {
 export interface UpdateUserRequest {
     name: string
 }
+
+export const Z_Customer = z.object({
+    id: z.string(),
+    tenantId: z.string(),
+    name: z.string(),
+    email: z.string(),
+    phone: z.string(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+})
+export type Customer = z.infer<typeof Z_Customer>
+
+export const Z_Booking = z.object({
+    id: z.string(),
+    tenantId: z.string(),
+    customerId: z.string(),
+    title: z.string(),
+    description: z.string(),
+    date: z.coerce.date(),
+    status: z.literal(['pending', 'confirmed', 'cancelled', 'completed']),
+    price: z.number(),
+    currency: z.literal("EUR"),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+})
+export type Booking = z.infer<typeof Z_Booking>
