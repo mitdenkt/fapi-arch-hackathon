@@ -17,9 +17,9 @@ server.register(require('@fastify/autoload'), {
 const start = async (): Promise<void> => {
     try {
         await server.listen({ port: 3000, host: '0.0.0.0' })
-        server.log.info('Server listening on http://localhost:3000')
+        console.log('Server listening on http://localhost:3000')
     } catch (err) {
-        server.log.error(err)
+        console.log(err)
         process.exit(1)
     }
 }

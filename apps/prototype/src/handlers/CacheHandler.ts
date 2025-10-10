@@ -63,7 +63,7 @@ export class CacheHandler {
     ): Map<string, z.core.output<T>> {
         const started = Date.now()
 
-        const jsonBasePath = path.join(__dirname, '..', '..', 'data', 'json')
+        const jsonBasePath = path.join(__dirname, '..', '..', '..', 'data', 'json')
 
         const dataPath = jsonBasePath + `/${appid}_${dataType}.json`
         const data = readFileSync(dataPath, { encoding: 'utf-8' })

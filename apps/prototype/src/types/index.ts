@@ -26,8 +26,8 @@ export const Z_Customer = z.object({
     name: z.string(),
     email: z.string(),
     phone: z.string(),
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
 })
 export type Customer = z.infer<typeof Z_Customer>
 
@@ -37,7 +37,7 @@ export const Z_Booking = z.object({
     customerId: z.string(),
     title: z.string(),
     description: z.string(),
-    date: z.coerce.date(),
+    date: z.string(),
     status: z.literal(['pending', 'confirmed', 'cancelled', 'completed']),
     price: z.number(),
     currency: z.literal("EUR"),

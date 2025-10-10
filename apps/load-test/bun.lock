@@ -4,6 +4,7 @@
     "": {
       "name": "load-test",
       "devDependencies": {
+        "@types/autocannon": "^7.12.7",
         "@types/bun": "^1.2.23",
         "@types/node": "^20.0.0",
         "autocannon": "^8.0.0",
@@ -17,6 +18,8 @@
     "@colors/colors": ["@colors/colors@1.5.0", "", {}, "sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ=="],
 
     "@minimistjs/subarg": ["@minimistjs/subarg@1.0.0", "", { "dependencies": { "minimist": "^1.1.0" } }, "sha512-Q/ONBiM2zNeYUy0mVSO44mWWKYM3UHuEK43PKIOzJCbvUnPoMH1K+gk3cf1kgnCVJFlWmddahQQCmrmBGlk9jQ=="],
+
+    "@types/autocannon": ["@types/autocannon@7.12.7", "", { "dependencies": { "@types/node": "*" } }, "sha512-Pd4nPf7wRpacULa6D/EC9x3CwzFQXwA0z5WFuik/fvJjW44V3WzBTM3jtt8nSBoflUNgswPiMCtgrr1bwnAcMg=="],
 
     "@types/bun": ["@types/bun@1.2.23", "", { "dependencies": { "bun-types": "1.2.23" } }, "sha512-le8ueOY5b6VKYf19xT3McVbXqLqmxzPXHsQT/q9JHgikJ2X22wyTW3g3ohz2ZMnp7dod6aduIiq8A14Xyimm0A=="],
 
