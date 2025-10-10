@@ -51,8 +51,7 @@ FAPI is replacing the legacy "Seres" system (.NET) but faces several performance
 
 ### Prerequisites
 
-- Node.js 18+
-- Bun runtime
+- Bun runtime. [Installieren](https://bun.com/docs/installation)
 - TypeScript
 
 ### Generating Test Data
