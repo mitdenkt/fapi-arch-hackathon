@@ -12,7 +12,7 @@ let bookings: Map<string, Booking> | null = null //Booking[] | null = null
 export class CacheHandler {
     public static init() {
         const parsedBookings = this._load(
-            'bookings',
+            'booking',
             Z_Booking,
             b => b.id
         )
@@ -20,7 +20,7 @@ export class CacheHandler {
         bookings = parsedBookings
 
         const parsedCustomer = this._load(
-            'customers',
+            'customer',
             Z_Customer,
             c => c.id
         )
@@ -32,7 +32,7 @@ export class CacheHandler {
         if (customers !== null) return customers
 
         const _customers = this._load(
-            'customers',
+            'customer',
             Z_Customer,
             c => c.id
         )
@@ -46,7 +46,7 @@ export class CacheHandler {
         if (bookings !== null) return bookings
 
         const _bookings = this._load(
-            'bookings',
+            'booking',
             Z_Booking,
             b => b.id
         )
@@ -57,15 +57,15 @@ export class CacheHandler {
     }
 
     private static _load<T extends SomeType>(
-        dataType: 'bookings' | 'customers',
+        dataType: 'booking' | 'customer',
         Z_Parser: T,
         keySelector: (entry: z.core.output<T>) => string
     ): Map<string, z.core.output<T>> {
         const started = Date.now()
 
-        const jsonBasePath = path.join(__dirname, '..', '..', '..', 'data', 'json')
+        const jsonBasePath = path.join(__dirname, '..', '..', '..', 'data', 'output', appid.toUpperCase())
 
-        const dataPath = jsonBasePath + `/${appid}_${dataType}.json`
+        const dataPath = jsonBasePath + `/${dataType}.json`
         const data = readFileSync(dataPath, { encoding: 'utf-8' })
         const dataParsed = z.array(Z_Parser).parse(JSON.parse(data))
 

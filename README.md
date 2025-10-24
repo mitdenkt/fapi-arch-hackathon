@@ -56,26 +56,25 @@ FAPI is replacing the legacy "Seres" system (.NET) but faces several performance
 
 ### Generating Test Data
 
+At least generate json to make sure the prototype works.
+
 ```bash
-cd apps/data
-bun install
-bun run all  # Generates JSON, SQL, and CSV test data
+bun install --cwd apps/data
+bun run --cwd apps/data generate [csv|json|sql]
 ```
 
 ### Running the Prototype
 
 ```bash
-cd apps/prototype
-bun install
-bun run dev
+bun install --cwd apps/prototype
+bun run --cwd apps/prototype dev
 ```
 
 ### Load Testing
 
 ```bash
-cd apps/load-test
-bun install
-bun run test
+bun install --cwd apps/load-test
+bun run test --cwd apps/load-test
 ```
 
 ## 🎯 Hackathon Tasks
