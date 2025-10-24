@@ -9,6 +9,7 @@ FAPI (fast + api) is a backend system that powers hair salon management for #mit
 - Employee shift scheduling
 - Available appointment calculations
 - Appointment display and management
+- ...and a lot more
 
 ## 🏗️ Current Architecture Overview
 
@@ -17,30 +18,30 @@ FAPI (fast + api) is a backend system that powers hair salon management for #mit
 FAPI is replacing the legacy "Seres" system (.NET) but faces several performance and architectural issues:
 
 - **Response Time Goal**: < 10ms (currently not consistently achieved)
-- **Memory Usage**: Several GB per instance held permanently in RAM
+- **Memory Usage**: Several GB per instance held permanently in RAM with poor persistence
 - **Data Sync Delays**: 10+ seconds for changes to propagate
-- **High Server Costs**: €1-2 per instance monthly due to constant caching
+- **High Complexity**: Data redundancy (in seres and fapi) needs great effort to achieve consitency
+- **JS-Single-Threading**: Requests with intensive calculations cause high latency for other requests due to blocked threads
 
 ### Current Tech Stack
 
 - **Runtime**: JavaScript (not TypeScript) with Fastify framework
 - **Data Storage**: Microsoft Table Storage (single source of truth)
 - **Caching**: In-memory HashMaps with Avro file persistence
-- **Messaging**: RabbitMQ for change notifications
+- **Messaging**: RabbitMQ for data change notification
 - **Initialization**: ~1 minute startup time per instance
 
 ### Data Flow
 
 1. **Seres** (legacy system) writes to Table Storage
-2. Changes published to **RabbitMQ**
-3. **FAPI instances** sync via RabbitMQ messages
-4. **Avro files** persist cache snapshots every 5 minutes
+2. Seres publishes changes to **RabbitMQ**
+3. **Avro files** persist cache snapshots every 5 minutes
 
 ## 📁 Repository Structure
 
 ```
 ├── apps/
-│   ├── prototype/          # Architecture prototype implementation
+│   ├── prototype/         # Architecture prototype implementation
 │   ├── data/              # Test data generation tools
 │   └── load-test/         # Performance testing tools
 └── documentation/         # Detailed specs and context
@@ -52,7 +53,6 @@ FAPI is replacing the legacy "Seres" system (.NET) but faces several performance
 ### Prerequisites
 
 - Bun runtime. [Installieren](https://bun.com/docs/installation)
-- TypeScript
 
 ### Generating Test Data
 
@@ -60,7 +60,7 @@ At least generate json to make sure the prototype works.
 
 ```bash
 bun install --cwd apps/data
-bun run --cwd apps/data generate [csv|json|sql]
+bun run --cwd apps/data generate [csv|json|sql...]
 ```
 
 ### Running the Prototype
@@ -86,9 +86,8 @@ Your mission is to solve FAPI's architectural challenges:
 Create an architecture that meets performance requirements:
 
 - Sub-10ms response times (server-side)
-- Efficient memory usage
-- Fast data synchronization
-- Cost-effective scaling
+- Less complex architecture for better developer experience
+- Prevent long-running computations from blocking other requests
 
 ### 2. Document Key Decisions
 
@@ -102,7 +101,7 @@ Explain your architectural choices:
 
 Implement a working proof-of-concept that demonstrates:
 
-- Core API functionality (load bookings)
+- Core API functionality (load bookings that match a specific period)
 - Improved performance characteristics
 - Better data handling
 
@@ -111,36 +110,15 @@ Implement a working proof-of-concept that demonstrates:
 Plan how to transition from the legacy system:
 
 - Minimize data synchronization complexity
-- Reduce downtime during migration
 - Handle multi-tenant deployment challenges
-
-## 🔍 Current Problems to Solve
-
-### Performance Issues
-
-- **Slow writes**: 10+ second delay for changes to appear
-- **Memory bloat**: GB of data cached per instance
-- **Blocking operations**: Concurrent API calls may block each other
-
-### Data Consistency
-
-- **Schema mismatches**: Different data sources use different schemas
-- **Sync complexity**: Multiple data sources (Avro, RabbitMQ, Table Storage)
-- **Stale data**: Long propagation delays
-
-### Operational Costs
-
-- **High memory usage**: Expensive server instances required
-- **Inefficient caching**: Full dataset cached for small queries
-- **Scaling challenges**: Per-tenant instances are costly
 
 ## 📊 Test Data
 
-The repository includes realistic test data for three salon applications:
+The repository includes realistic test data for three salon applications in the directory `/apps/data/output`:
 
-- `appa_*` - Small salon data
-- `appb_*` - Medium salon data
-- `appc_*` - Large salon data
+- `APPA` - Small salon data
+- `APPB` - Medium salon data
+- `ABBC` - Large salon data
 
 Each includes customer and booking datasets in multiple formats (CSV, JSON, SQL).
 
