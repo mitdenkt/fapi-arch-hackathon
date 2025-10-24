@@ -74,7 +74,7 @@ bun run --cwd apps/prototype dev
 
 ```bash
 bun install --cwd apps/load-test
-bun run test --cwd apps/load-test
+bun run --cwd apps/load-test test
 ```
 
 ## 🎯 Hackathon Tasks

@@ -6,8 +6,8 @@ import { SomeType } from "zod/v4/core";
 
 const appid = process.env.APP ?? 'appa'
 
-let customers: Map<string, Customer> | null = null //<string, Customer> | null = null
-let bookings: Map<string, Booking> | null = null //Booking[] | null = null
+let customers: Map<string, Customer> | null = null
+let bookings: Map<string, Booking> | null = null
 
 export class CacheHandler {
     public static init() {
