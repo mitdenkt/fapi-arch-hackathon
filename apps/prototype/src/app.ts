@@ -13,15 +13,30 @@ server.register(require('@fastify/autoload'), {
     options: { routeParams: true }
 })
 
-// Start the server
+// Start the server, try ports upward if the port is taken
 const start = async (): Promise<void> => {
-    try {
-        await server.listen({ port: 3000, host: '0.0.0.0' })
-        console.log('Server listening on http://localhost:3000')
-    } catch (err) {
-        console.log(err)
-        process.exit(1)
+    const host = '0.0.0.0'
+    const startPort = 3000
+    const maxPort = 3100
+
+    for (let port = startPort; port <= maxPort; port++) {
+        try {
+            await server.listen({ port, host })
+            console.log(`Server listening on http://localhost:${port}`)
+            return
+        } catch (err: any) {
+            // If port is in use or permission denied, try next port
+            if (err && (err.code === 'EADDRINUSE' || err.code === 'EACCES')) {
+                console.warn(`Port ${port} unavailable (${err.code}). Trying ${port + 1}...`)
+                continue
+            }
+            console.error(err)
+            process.exit(1)
+        }
     }
+
+    console.error(`No available ports found in range ${startPort}-${maxPort}`)
+    process.exit(1)
 }
 
 start()

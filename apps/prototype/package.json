@@ -4,7 +4,9 @@
     "description": "Fastify app with autoload plugin",
     "main": "dist/app.js",
     "scripts": {
-        "dev": "APP=appc sh -c 'tsc && bun --watch dist/app.js'"
+        "dev:appa": "APP=appa sh -c 'tsc && bun --watch dist/app.js'",
+        "dev:appb": "APP=appb sh -c 'tsc && bun --watch dist/app.js'",
+        "dev:appc": "APP=appc sh -c 'tsc && bun --watch dist/app.js'"
     },
     "dependencies": {
         "@fastify/autoload": "^5.8.0",
