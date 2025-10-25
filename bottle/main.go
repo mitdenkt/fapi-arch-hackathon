@@ -1,21 +1,14 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"time"
 
-	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
-
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
-	}
-}
 
 type Booking struct {
 	Id          string `json:"id"`
@@ -49,80 +42,66 @@ func main() {
 		fmt.Printf("bookings unmarshal failed: %v\n", err)
 	}
 
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
-	failOnError(err, "Failed to connect to RabbitMQ")
-	defer conn.Close()
+	// configure logger
+	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
 
-	ch, err := conn.Channel()
-	failOnError(err, "Failed to open a channel")
-	defer ch.Close()
-
-	// Durable topic exchange
-	exchangeName := "events"
-	err = ch.ExchangeDeclare(
-		exchangeName,
-		"topic", // allows routing by pattern
-		true,    // durable
-		false,   // auto-delete
-		false,   // internal
-		false,   // no-wait
-		nil,
-	)
-	failOnError(err, "Failed to declare exchange")
-
-	// Quorum queue for persistence and HA
-	queueName := "order_events_group_a"
-	args := amqp.Table{
-		"x-queue-type": "quorum",
+	// build config map, enable broker debug when verbose
+	config := kafka.ConfigMap{
+		"bootstrap.servers": "localhost:9092,localhost:9093,localhost:9094",
+		"client.id":         "myProducer",
+		"acks":              "all",
 	}
 
-	q, err := ch.QueueDeclare(
-		queueName,
-		true,  // durable
-		false, // auto-delete
-		false, // exclusive
-		false, // no-wait
-		args,
-	)
-	failOnError(err, "Failed to declare queue")
+	p, err := kafka.NewProducer(&config)
+	if err != nil {
+		log.Printf("Failed to create producer: %s\n", err)
+		os.Exit(1)
+	}
+	defer p.Close()
 
-	// Bind with routing key
-	routingKey := "orders.created"
-	err = ch.QueueBind(
-		q.Name,
-		routingKey,
-		exchangeName,
-		false,
-		nil,
-	)
-	failOnError(err, "Failed to bind queue")
+	topic := "events"
 
-	// Publish persistent event
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	deliveryChan := make(chan kafka.Event, 1)
 
 	for _, element := range bookings {
-
 		b, err := json.Marshal(element)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-
-		err = ch.PublishWithContext(ctx,
-			exchangeName, // exchange
-			routingKey,   // routing key
-			false,        // mandatory
-			false,        // immediate
-			amqp.Publishing{
-				ContentType:  "application/json",
-				DeliveryMode: amqp.Persistent, // VERY important!
-				Body:         b,
-				Timestamp:    time.Now(),
-			})
-		failOnError(err, "Failed to publish message")
-
-		log.Printf("Published event: %s", string(b))
-
+		err = p.Produce(&kafka.Message{
+			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+			Value:          b,
+		}, deliveryChan)
+		if err != nil {
+			log.Printf("Failed to produce: %s\n", err)
+			os.Exit(1)
+		}
 	}
+
+	p.Flush(1000)
+
+	// wait for delivery report
+	select {
+	case ev := <-deliveryChan:
+		msg := ev.(*kafka.Message)
+		if msg.TopicPartition.Error != nil {
+			log.Printf("Delivery failed: %v\n", msg.TopicPartition.Error)
+			os.Exit(1)
+		}
+		log.Printf("Message delivered to %v (len=%d)\n", msg.TopicPartition, len(msg.Value))
+	case <-time.After(10 * time.Second):
+		log.Println("Timed out waiting for delivery report")
+	}
+
+	close(deliveryChan)
+
+	// flush outstanding messages before exiting
+	remaining := p.Flush(15 * 1000)
+	if remaining > 0 {
+		log.Printf("Flush timeout, %d message(s) still in queue\n", remaining)
+	} else {
+	}
+
+	fmt.Println("producer finished")
 }
