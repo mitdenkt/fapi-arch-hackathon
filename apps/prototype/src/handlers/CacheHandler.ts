@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import path from "path";
-import { Booking, Customer, Z_Booking, Z_Customer } from "src/types";
+import { Booking, Customer, Z_Booking, Z_Customer } from "@types";
 import z from "zod";
 import { SomeType } from "zod/v4/core";
 
@@ -69,8 +69,6 @@ export class CacheHandler {
         Z_Parser: T,
         keySelector: (entry: z.core.output<T>) => string
     ): Map<string, z.core.output<T>> {
-        const started = Date.now()
-
         const jsonBasePath = path.join(__dirname, '..', '..', '..', 'data', 'output', appid.toUpperCase())
 
         const dataPath = jsonBasePath + `/${dataType}.json`
@@ -85,8 +83,6 @@ export class CacheHandler {
                 d
             )
         })
-
-        console.log(`initial loading of "${dataType}" finished in ${Date.now() - started} ms for appid ${appid}.`)
 
         return map
     }

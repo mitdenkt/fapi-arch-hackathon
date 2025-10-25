@@ -1,0 +1,11 @@
+# Bun configuration file
+# This maps TypeScript path aliases for runtime resolution
+
+[install]
+# Production dependencies only in CI
+production = false
+
+# Path aliases for module resolution (matches tsconfig.json)
+[module]
+paths = { "@cache/*" = ["./src/cache/*"], "@handlers/*" = ["./src/handlers/*"], "@schemas/*" = ["./src/schemas/*"], "@db/*" = ["./src/db/*"], "@types" = ["./src/types/index"] }
+

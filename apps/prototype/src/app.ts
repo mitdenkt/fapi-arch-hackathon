@@ -1,6 +1,15 @@
 import { CacheHandler } from '@handlers/CacheHandler'
+import { ValkeyClient } from '@cache/ValkeyClient'
 import fastify from 'fastify'
 import path from 'path'
+
+// Initialize Valkey cache connection
+ValkeyClient.init()
+
+// Test Valkey connection after a brief delay to allow connection to establish
+setTimeout(async () => {
+    await ValkeyClient.testConnection()
+}, 1000)
 
 // caching the data from file system
 CacheHandler.init()
@@ -27,7 +36,6 @@ const start = async (): Promise<void> => {
         } catch (err: any) {
             // If port is in use or permission denied, try next port
             if (err && (err.code === 'EADDRINUSE' || err.code === 'EACCES')) {
-                console.warn(`Port ${port} unavailable (${err.code}). Trying ${port + 1}...`)
                 continue
             }
             console.error(err)
@@ -38,5 +46,22 @@ const start = async (): Promise<void> => {
     console.error(`No available ports found in range ${startPort}-${maxPort}`)
     process.exit(1)
 }
+
+// Graceful shutdown
+const gracefulShutdown = async (signal: string) => {
+    console.log(`\nReceived ${signal}, closing gracefully...`)
+    
+    try {
+        await server.close()
+        await ValkeyClient.close()
+        process.exit(0)
+    } catch (err) {
+        console.error('Error during graceful shutdown:', err)
+        process.exit(1)
+    }
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
+process.on('SIGINT', () => gracefulShutdown('SIGINT'))
 
 start()

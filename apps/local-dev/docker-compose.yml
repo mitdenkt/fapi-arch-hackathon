@@ -17,6 +17,12 @@ services:
       interval: 10s
       timeout: 3s
       retries: 5
+    command: >
+      postgres
+      -c shared_buffers=16GB
+      -c work_mem=64MB
+      -c maintenance_work_mem=256MB
+      -c effective_cache_size=6GB
 
   cache:
     image: valkey/valkey:9-alpine
