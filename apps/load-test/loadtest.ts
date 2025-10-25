@@ -11,7 +11,6 @@ let httpErrors = 0;
 const querystring = 'start=2025-10-20&end=2025-10-26'
 
 const customerport = 3000
-const appid = process.env.APP ?? 'appa';
 
 const customerId = await fetch(`http://localhost:${customerport}/api/customers`)
     .then(r => r.json())
@@ -24,10 +23,6 @@ if (customerId === undefined) {
 
 const test = async (port: number) => {
     const numberofreturns: number[] = []
-    
-    // Get the first customer from the database
-    const customerId = 'e56ac603-00fa-4924-9e9b-9d50ed9afa70';
-    console.log(`Using customer ID: ${customerId}`);
 
     const resultRead1 = await autocannon({
         url: `http://localhost:${port}`,

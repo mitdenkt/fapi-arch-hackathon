@@ -6,9 +6,9 @@
     "scripts": {
         "build": "tsc",
         "start": "node dist/src/app.js",
-        "dev:appa": "APP=appa tsc && bun --watch --env-file=.env dist/src/app.js",
-        "dev:appb": "APP=appb sh -c 'tsc && bun --watch --env-file=.env dist/src/app.js'",
-        "dev:appc": "APP=appc sh -c 'tsc && bun --watch --env-file=.env dist/src/app.js'",
+        "dev:appa": "APP=APPA tsc && bun --watch --env-file=.env dist/src/app.js",
+        "dev:appb": "APP=APPB sh -c 'tsc && bun --watch --env-file=.env dist/src/app.js'",
+        "dev:appc": "APP=APPC sh -c 'tsc && bun --watch --env-file=.env dist/src/app.js'",
         "seed": "tsx src/seed.ts",
         "db:generate": "drizzle-kit generate",
         "db:migrate": "drizzle-kit migrate",
