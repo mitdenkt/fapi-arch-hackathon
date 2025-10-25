@@ -1,7 +1,7 @@
 services:
-  postgres:
+  db:
     image: postgres:18-alpine
-    container_name: postgres
+    container_name: db
     environment:
       POSTGRES_DB: app
       POSTGRES_USER: app
@@ -16,9 +16,9 @@ services:
       timeout: 3s
       retries: 5
 
-  valkey:
+  cache:
     image: valkey/valkey:9-alpine
-    container_name: valkey
+    container_name: cache
     command: ["valkey-server", "--appendonly", "yes"]
     volumes:
       - valkey-data:/data
@@ -37,13 +37,13 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: postgresql://app:app@postgres:5432/app
-      VALKEY_HOST: valkey
+      DATABASE_URL: postgresql://app:app@db:5432/app
+      VALKEY_HOST: cache
       VALKEY_PORT: 6379
     depends_on:
-      postgres:
+      db:
         condition: service_healthy
-      valkey:
+      cache:
         condition: service_healthy
     networks:
       - backend
@@ -57,15 +57,13 @@ services:
         order: start-first
       endpoint_mode: dnsrr
 
-  haproxy:
+  proxy:
     image: haproxy:3.2-alpine
-    container_name: haproxy
+    container_name: proxy
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     ports:
       - "80:80"
-    depends_on:
-      - api
     networks:
       - frontend
       - backend
