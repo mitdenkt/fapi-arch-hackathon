@@ -45,3 +45,16 @@ export const Z_Booking = z.object({
     updatedAt: z.string(),
 })
 export type Booking = z.infer<typeof Z_Booking>
+
+export const Z_BookingCandidate = z.object({
+    customerId: z.string(),
+    title: z.string(),
+    description: z.string(),
+    date: z.string(),
+    status: z.literal(['pending', 'confirmed', 'cancelled', 'completed']),
+    price: z.number(),
+    currency: z.literal("EUR"),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+})
+export type BookingCandidate = z.infer<typeof Z_BookingCandidate>

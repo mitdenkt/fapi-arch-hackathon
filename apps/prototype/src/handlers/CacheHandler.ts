@@ -56,6 +56,14 @@ export class CacheHandler {
         return _bookings
     }
 
+    public static addBooking(booking: Booking): Booking {
+        if (bookings === null) throw new Error('not inited yet')
+
+        bookings.set(booking.id, booking)
+
+        return booking
+    }
+
     private static _load<T extends SomeType>(
         dataType: 'booking' | 'customer',
         Z_Parser: T,

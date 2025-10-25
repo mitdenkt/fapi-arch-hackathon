@@ -158,11 +158,13 @@ For detailed context, check the `documentation/` folder:
 
 Your solution should demonstrate:
 
-- **Performance**: Consistent sub-10ms response times
-- **Scalability**: Efficient resource usage across multiple tenants
-- **Reliability**: Robust data synchronization
-- **Maintainability**: Clean, documented architecture
-- **Migration Path**: Realistic transition strategy
+- **Performance**: Millisekunden schneller als mein Prototyp (3 Versuche): "Latency avg" gemittelt über alle Tenants. (Maximal 10 Punkte)
+  - appa: 128ms
+  - appb: 862ms
+  - appc: 1864ms
+  - average: 951ms
+- **Fit to company**: Wie gut passt die Strategie/Archiktur in das Unternehmen. Bewertet von Matthias. (Maximal 5 Punkte)
+- **Migration Path**: Wie löst man das Altsystem ab. Bewertet von Nikita. (Maximal 5 Punkte)
 
 ## 🤝 Getting Help
 

@@ -1,4 +1,8 @@
+import { randomUUID } from "crypto"
+import { Booking, BookingCandidate } from "src/types"
 import { CacheHandler } from "./CacheHandler"
+
+const appid = process.env.APP ?? 'appa'
 
 export class BookingHandler {
     static async queryRange(start: Date, end: Date) {
@@ -19,6 +23,11 @@ export class BookingHandler {
                 customer: CacheHandler.getCustomers().get(b.customerId)
             })),
         }
+    }
 
+    static async addBooking(booking: BookingCandidate): Promise<Booking> {
+        const id = randomUUID()
+
+        return CacheHandler.addBooking({ ...booking, id, tenantId: appid })
     }
 }
