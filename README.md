@@ -3,20 +3,20 @@
 Welcome to the FAPI Architecture Hackathon! This repository contains everything you need to understand, analyze, and redesign the architecture of our fast API system for hair salon management.
 
 ## 󰞌 Timetable
-| Time | Event |
-|------|-------|
-| 14:00 | Opening and Welcome |
-| 14:10 | Introduction to FAPI and Challenges |
-| 14:30 | Solo-Ideation, Elevatorpitch and Team Formation |
-| 15:00 | Work on your Ideas |
-| 18:30 | Pizza Break |
-| 19:00 | Work on your Ideas |
-| 20:00 | Move to WG and finetune and prepare pitches  |
-| 21:00 | Pitches and Beer |
-| 21:30 | Way more Beer |
-| 00:00 | Party at Uebel & Gefaerlich |
-| 06:00 | Fischmarkt |
 
+| Time  | Event                                           |
+| ----- | ----------------------------------------------- |
+| 14:00 | Opening and Welcome                             |
+| 14:10 | Introduction to FAPI and Challenges             |
+| 14:30 | Solo-Ideation, Elevatorpitch and Team Formation |
+| 15:00 | Work on your Ideas                              |
+| 18:30 | Pizza Break                                     |
+| 19:00 | Work on your Ideas                              |
+| 20:00 | Move to WG and finetune and prepare pitches     |
+| 21:00 | Pitches and Beer                                |
+| 21:30 | Way more Beer                                   |
+| 00:00 | Party at Uebel & Gefaerlich                     |
+| 06:00 | Fischmarkt                                      |
 
 ## 🎯 What is FAPI?
 
@@ -83,7 +83,9 @@ bun run --cwd apps/data generate [csv|json|sql...]
 
 ```bash
 bun install --cwd apps/prototype
-bun run --cwd apps/prototype dev
+bun run --cwd apps/prototype dev:appa
+bun run --cwd apps/prototype dev:appb
+bun run --cwd apps/prototype dev:appc
 ```
 
 ### Load Testing
