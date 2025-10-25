@@ -11,7 +11,7 @@ let httpErrors = 0;
 const querystring = 'start=2025-10-20&end=2025-10-26'
 
 const customerport = 3000
-
+const appid = 'APPA';
 const customerId = await fetch(`http://localhost:${customerport}/api/customers`)
     .then(r => r.json())
     .then(j => j?.id)
