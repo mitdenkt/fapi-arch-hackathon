@@ -27,6 +27,7 @@ export class BookingHandler {
 
     static async addBooking(booking: BookingCandidate): Promise<Booking> {
         const id = randomUUID()
+        console.log('jetzt neues booking')
 
         return CacheHandler.addBooking({ ...booking, id, tenantId: appid })
     }

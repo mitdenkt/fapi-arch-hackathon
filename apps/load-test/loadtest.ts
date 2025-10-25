@@ -58,12 +58,12 @@ const test = async (port: number) => {
                     customerId,
                     title: 'Das ist eine neue Buchung',
                     description: 'das ist meine beschreibung',
-                    date: new Date('2025-10-10'),
+                    date: new Date('2025-10-25'),
                     status: 'pending',
                     price: 20_00,
                     currency: 'EUR',
-                    createdAt: new Date('2025-10-10'),
-                    updatedAt: new Date('2025-10-10'),
+                    createdAt: new Date('2025-10-25'),
+                    updatedAt: new Date('2025-10-25'),
                 }),
                 onResponse: (status, _body, _context) => {
                     if (status !== 200) {
