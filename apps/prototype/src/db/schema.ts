@@ -11,7 +11,7 @@ export const customer = pgTable('customer', {
 }, (table) => [
   index('idx_customer_tenant_id').on(table.tenantId),
   index('idx_customer_email').on(table.email),
-]);
+]).enableRLS();
 
 export const booking = pgTable('booking', {
   id: varchar({ length: 255 }).primaryKey(),
@@ -47,4 +47,4 @@ export const booking = pgTable('booking', {
   
   // Covering index for common list queries (includes commonly selected columns)
   index('idx_booking_tenant_date_status_covering').on(table.tenantId, table.date, table.status, table.customerId),
-]);
+]).enableRLS();

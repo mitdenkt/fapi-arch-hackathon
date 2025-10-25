@@ -1,4 +1,7 @@
 import autocannon from "autocannon";
+import 'dotenv/config';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { sql } from 'drizzle-orm';
 
 const connections = 5
 const totalRequests = 10
@@ -8,6 +11,7 @@ let httpErrors = 0;
 const querystring = 'start=2025-10-20&end=2025-10-26'
 
 const customerport = 3000
+const appid = process.env.APP ?? 'appa';
 
 const customerId = await fetch(`http://localhost:${customerport}/api/customers`)
     .then(r => r.json())
@@ -18,9 +22,12 @@ if (customerId === undefined) {
     process.exit(1)
 }
 
-
 const test = async (port: number) => {
     const numberofreturns: number[] = []
+    
+    // Get the first customer from the database
+    const customerId = 'e56ac603-00fa-4924-9e9b-9d50ed9afa70';
+    console.log(`Using customer ID: ${customerId}`);
 
     const resultRead1 = await autocannon({
         url: `http://localhost:${port}`,
@@ -34,11 +41,21 @@ const test = async (port: number) => {
                 onResponse: (status, _body, _context) => {
 
                     if (status !== 200) {
-                        console.error(`Unexpected status: ${status}`);
+                        console.error(`GET Error ${status}: ${_body}`);
                         httpErrors++;
+                        numberofreturns.push(0);
+                        return;
                     }
 
-                    numberofreturns.push(JSON.parse(_body).bookings.length)
+                    try {
+                        const response = JSON.parse(_body);
+                        const bookingCount = response.bookings ? response.bookings.length : 0;
+                        numberofreturns.push(bookingCount);
+                        console.log(`GET Success: Found ${bookingCount} bookings`);
+                    } catch (e) {
+                        console.error(`Failed to parse response: ${_body} - Error: ${e}`);
+                        numberofreturns.push(0)
+                    }
                 }
             }
         ]
@@ -61,14 +78,17 @@ const test = async (port: number) => {
                     date: new Date('2025-10-10'),
                     status: 'pending',
                     price: 20_00,
+                    tenantId: appid,
                     currency: 'EUR',
                     createdAt: new Date('2025-10-10'),
                     updatedAt: new Date('2025-10-10'),
                 }),
                 onResponse: (status, _body, _context) => {
-                    if (status !== 200) {
-                        console.error(`Unexpected status: ${status}`);
+                    if (status !== 200 && status !== 201) {
+                        console.error(`POST Error ${status}: ${_body}`);
                         httpErrors++;
+                    } else {
+                        console.log(`POST Success ${status}: Booking created`);
                     }
                 }
             }
@@ -86,11 +106,21 @@ const test = async (port: number) => {
                 path: `/api/bookings?${querystring}`,
                 onResponse: (status, _body, _context) => {
                     if (status !== 200) {
-                        console.error(`Unexpected status: ${status}`, _body);
+                        console.error(`GET Error ${status}: ${_body}`);
                         httpErrors++;
+                        numberofreturns.push(0);
+                        return;
                     }
 
-                    numberofreturns.push(JSON.parse(_body).bookings.length)
+                    try {
+                        const response = JSON.parse(_body);
+                        const bookingCount = response.bookings ? response.bookings.length : 0;
+                        numberofreturns.push(bookingCount);
+                        console.log(`GET Success: Found ${bookingCount} bookings`);
+                    } catch (e) {
+                        console.error(`Failed to parse response: ${_body} - Error: ${e}`);
+                        numberofreturns.push(0)
+                    }
                 }
             }
         ]

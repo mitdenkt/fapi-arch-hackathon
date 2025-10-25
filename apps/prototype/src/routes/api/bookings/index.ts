@@ -2,7 +2,7 @@ import { BookingHandler } from '@handlers/BookingHandler'
 import { CacheHandler } from '@handlers/CacheHandler'
 import { F_RangeSchema, Z_RangeSchema } from '@schemas/range'
 import { FastifyInstance, FastifyPluginOptions, FastifyRequest } from 'fastify'
-import { Z_BookingCandidate } from 'src/types'
+import { Z_BookingCandidate } from '@types'
 
 async function routes(fastify: FastifyInstance, _options: FastifyPluginOptions): Promise<void> {
     fastify.route({

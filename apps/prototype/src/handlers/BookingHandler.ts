@@ -1,6 +1,5 @@
 import { randomUUID } from "crypto"
 import { Booking, BookingCandidate } from "../types"
-import { CacheHandler } from "./CacheHandler"
 import { db } from '../index'
 import { booking, customer } from '@db/schema'
 import { and, gte, lte, eq } from 'drizzle-orm'
@@ -68,7 +67,8 @@ export class BookingHandler {
             .where(
                 and(
                     gte(booking.date, start),
-                    lte(booking.date, end)
+                    lte(booking.date, end),
+                    eq(booking.tenantId, appid)
                 )
             )
         
@@ -97,10 +97,74 @@ export class BookingHandler {
         return result
     }
 
-    static async addBooking(booking: BookingCandidate): Promise<Booking> {
+    static async addBooking(bookingData: BookingCandidate): Promise<Booking> {
         const id = randomUUID()
-
-        return CacheHandler.addBooking({ ...booking, id, tenantId: appid })
+        const now = new Date()
+        
+        // Validate that the customer exists
+        const existingCustomer = await db
+            .select()
+            .from(customer)
+            .where(and(
+                eq(customer.id, bookingData.customerId),
+                eq(customer.tenantId, appid)
+            ))
+            .limit(1)
+        
+        if (existingCustomer.length === 0) {
+            throw new Error(`Customer with ID ${bookingData.customerId} not found for tenant ${appid}`)
+        }
+        
+        // Create the booking data for database insertion
+        const newBooking = {
+            id,
+            tenantId: appid,
+            customerId: bookingData.customerId,
+            title: bookingData.title,
+            description: bookingData.description || '',
+            date: new Date(bookingData.date),
+            status: bookingData.status,
+            price: bookingData.price,
+            currency: bookingData.currency,
+            createdAt: now,
+            updatedAt: now,
+        }
+        
+        // Insert the booking into the database
+        const insertedBookings = await db
+            .insert(booking)
+            .values(newBooking)
+            .returning()
+        
+        if (insertedBookings.length === 0) {
+            throw new Error('Failed to create booking')
+        }
+        
+        const createdBooking = insertedBookings[0]
+        
+        // Convert to the expected format (with string dates)
+        const formattedBooking: Booking = {
+            ...createdBooking,
+            description: createdBooking.description || '',
+            status: createdBooking.status as 'pending' | 'confirmed' | 'cancelled' | 'completed',
+            currency: createdBooking.currency as 'EUR',
+            date: createdBooking.date.toISOString(),
+            createdAt: createdBooking.createdAt.toISOString(),
+            updatedAt: createdBooking.updatedAt.toISOString(),
+        }
+        
+        // Invalidate relevant caches since we added a new booking
+        // We'll invalidate caches for the date range around the booking date
+        const bookingDate = new Date(bookingData.date)
+        const startOfDay = new Date(bookingDate)
+        startOfDay.setHours(0, 0, 0, 0)
+        const endOfDay = new Date(bookingDate)
+        endOfDay.setHours(23, 59, 59, 999)
+        
+        // Invalidate cache asynchronously (don't wait for it)
+        this.invalidateCache(startOfDay, endOfDay).catch(() => {})
+        
+        return formattedBooking
     }
 
     /**
