@@ -24,4 +24,8 @@ export const Z_RangeSchema = z.object({
     end: z.coerce.date()
 })
 
+export const Z_ID = z.object({
+    id: z.coerce.string()
+})
+
 export type RangeSchema = z.infer<typeof Z_RangeSchema>

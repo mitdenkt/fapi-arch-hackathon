@@ -5,6 +5,20 @@ const totalRequests = 10
 
 let httpErrors = 0;
 
+const querystring = 'start=2025-10-20&end=2025-10-26'
+
+const customerport = 3000
+
+const customerId = await fetch(`http://localhost:${customerport}/api/customers`)
+    .then(r => r.json())
+    .then(j => j?.id)
+
+if (customerId === undefined) {
+    console.log('did not find a cutomer')
+    process.exit(1)
+}
+
+
 const test = async (port: number) => {
     const numberofreturns: number[] = []
 
@@ -16,8 +30,9 @@ const test = async (port: number) => {
         requests: [
             {
                 method: 'GET',
-                path: '/api/bookings?start=2025-10-01&end=2025-10-30',
+                path: `/api/bookings?${querystring}`,
                 onResponse: (status, _body, _context) => {
+
                     if (status !== 200) {
                         console.error(`Unexpected status: ${status}`);
                         httpErrors++;
@@ -40,7 +55,7 @@ const test = async (port: number) => {
                 path: '/api/bookings',
                 headers: { "content-type": 'application/json' },
                 body: JSON.stringify({
-                    customerId: '725a92c1-b13b-4e68-a018-9df131725279',
+                    customerId,
                     title: 'Das ist eine neue Buchung',
                     description: 'das ist meine beschreibung',
                     date: new Date('2025-10-10'),
@@ -68,10 +83,10 @@ const test = async (port: number) => {
         requests: [
             {
                 method: 'GET',
-                path: '/api/bookings?start=2025-10-01&end=2025-10-30',
+                path: `/api/bookings?${querystring}`,
                 onResponse: (status, _body, _context) => {
                     if (status !== 200) {
-                        console.error(`Unexpected status: ${status}`);
+                        console.error(`Unexpected status: ${status}`, _body);
                         httpErrors++;
                     }
 
