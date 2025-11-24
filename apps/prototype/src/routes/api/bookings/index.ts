@@ -1,6 +1,5 @@
 import { BookingHandler } from '@handlers/BookingHandler'
-import { CacheHandler } from '@handlers/CacheHandler'
-import { F_RangeSchema, Z_RangeSchema } from '@schemas/range'
+import { Z_RangeSchema } from '@schemas/range'
 import { FastifyInstance, FastifyPluginOptions, FastifyRequest } from 'fastify'
 import { Z_BookingCandidate } from 'src/types'
 
